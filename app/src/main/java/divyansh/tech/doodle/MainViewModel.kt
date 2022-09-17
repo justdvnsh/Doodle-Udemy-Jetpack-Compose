@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,9 @@ class MainViewModel: ViewModel() {
 
     private val _strokeWidthList = mutableStateListOf<Dp>()
     val strokeWidthList: List<Dp> = _strokeWidthList
+
+    private val _pathList = mutableStateListOf<PathState>()
+    val pathList: List<PathState> = _pathList
 
     var selectedColor by mutableStateOf(Color.Black)
 
@@ -35,6 +39,8 @@ class MainViewModel: ViewModel() {
         for (i in 6 until 26 step 2) {
             _strokeWidthList.add(i.dp)
         }
+
+        _pathList.add(PathState())
     }
 
     fun onColorSelect(color: Color) {
@@ -43,5 +49,20 @@ class MainViewModel: ViewModel() {
 
     fun onStrokeWidthSelect(width: Dp) {
         selectedStrokeWidth = width
+    }
+
+    fun addPath() {
+        _pathList.add(
+            PathState(
+                path = Path(),
+                color = selectedColor,
+                strokeWidth = selectedStrokeWidth
+            )
+        )
+    }
+
+    fun deleteDrawing() {
+        _pathList.clear()
+        addPath()
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -39,14 +40,17 @@ class MainActivity : ComponentActivity() {
                     BottomSheetState(BottomSheetValue.Collapsed)
                 )
 
-                val path by remember {mutableStateOf(mutableListOf(PathState()))}
-
                 BoxWithConstraints {
                     BottomSheetScaffold(
                         topBar = {
                             TopAppBar(
                                 title = {
                                     Text(text = "Doodle")
+                                },
+                                actions = {
+                                    IconButton(onClick = { viewModel.deleteDrawing() }) {
+                                        Icon(imageVector = Icons.Default.Delete, contentDescription = "")
+                                    }
                                 }
                             )
                         },
@@ -56,23 +60,11 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onColorSelected = {
                                     viewModel.onColorSelect(it)
-                                    path.add(
-                                        PathState(
-                                            path = Path(),
-                                            color = viewModel.selectedColor,
-                                            strokeWidth = viewModel.selectedStrokeWidth
-                                        )
-                                    )
+                                    viewModel.addPath()
                                 },
                                 onStrokeSelected = {
                                     viewModel.onStrokeWidthSelect(it)
-                                    path.add(
-                                        PathState(
-                                            path = Path(),
-                                            color = viewModel.selectedColor,
-                                            strokeWidth = viewModel.selectedStrokeWidth
-                                        )
-                                    )
+                                    viewModel.addPath()
                                 }
                             )
                         },
@@ -81,9 +73,11 @@ class MainActivity : ComponentActivity() {
                         scaffoldState = bottomSheetScaffoldState
                     ) {
                         DrawingArea(
-                            path = path,
+                            path = viewModel.pathList,
                             color = viewModel.selectedColor,
-                            modifier = Modifier.fillMaxSize().padding(bottom = 40.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 40.dp),
                             stroke = viewModel.selectedStrokeWidth
                         )
                     }

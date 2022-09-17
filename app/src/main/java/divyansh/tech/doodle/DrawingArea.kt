@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.unit.Dp
@@ -24,10 +25,10 @@ data class PathState(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DrawingArea(
+    modifier: Modifier = Modifier,
     color: Color = Color.Black,
     stroke: Dp = 6.dp,
-    path: MutableList<PathState>,
-    modifier: Modifier = Modifier
+    path: List<PathState>,
 ) {
     val currentPath = path.last().path
     val movePath = remember{ mutableStateOf<Offset?>(null)}
@@ -54,14 +55,20 @@ fun DrawingArea(
             drawPath(
                 path = currentPath,
                 color = color,
-                style = Stroke(stroke.toPx())
+                style = Stroke(
+                    width = stroke.toPx(),
+                    cap = StrokeCap.Round
+                )
             )
         }
         path.forEach {
             drawPath(
                 path = it.path,
                 color = it.color,
-                style  = Stroke(it.strokeWidth.toPx())
+                style  = Stroke(
+                    width = it.strokeWidth.toPx(),
+                    cap = StrokeCap.Round
+                )
             )
         }
     }
