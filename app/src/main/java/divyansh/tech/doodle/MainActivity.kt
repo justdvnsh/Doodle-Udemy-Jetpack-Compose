@@ -14,8 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -36,6 +39,8 @@ class MainActivity : ComponentActivity() {
                     BottomSheetState(BottomSheetValue.Collapsed)
                 )
 
+                val path by remember {mutableStateOf(mutableListOf(PathState()))}
+
                 BoxWithConstraints {
                     BottomSheetScaffold(
                         topBar = {
@@ -51,9 +56,23 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onColorSelected = {
                                     viewModel.onColorSelect(it)
+                                    path.add(
+                                        PathState(
+                                            path = Path(),
+                                            color = viewModel.selectedColor,
+                                            strokeWidth = viewModel.selectedStrokeWidth
+                                        )
+                                    )
                                 },
                                 onStrokeSelected = {
                                     viewModel.onStrokeWidthSelect(it)
+                                    path.add(
+                                        PathState(
+                                            path = Path(),
+                                            color = viewModel.selectedColor,
+                                            strokeWidth = viewModel.selectedStrokeWidth
+                                        )
+                                    )
                                 }
                             )
                         },
@@ -61,7 +80,12 @@ class MainActivity : ComponentActivity() {
                         sheetShape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                         scaffoldState = bottomSheetScaffoldState
                     ) {
-
+                        DrawingArea(
+                            path = path,
+                            color = viewModel.selectedColor,
+                            modifier = Modifier.fillMaxSize().padding(bottom = 40.dp),
+                            stroke = viewModel.selectedStrokeWidth
+                        )
                     }
                 }
             }
