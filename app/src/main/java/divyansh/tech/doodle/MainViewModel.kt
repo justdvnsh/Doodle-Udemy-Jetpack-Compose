@@ -39,8 +39,6 @@ class MainViewModel: ViewModel() {
         for (i in 6 until 26 step 2) {
             _strokeWidthList.add(i.dp)
         }
-
-        _pathList.add(PathState())
     }
 
     fun onColorSelect(color: Color) {
@@ -51,18 +49,18 @@ class MainViewModel: ViewModel() {
         selectedStrokeWidth = width
     }
 
-    fun addPath() {
+    fun addPath(path: PathState) {
         _pathList.add(
             PathState(
-                path = Path(),
-                color = selectedColor,
-                strokeWidth = selectedStrokeWidth
+                path = path.path,
+                color = path.color,
+                strokeWidth = path.strokeWidth
             )
         )
     }
 
     fun deleteDrawing() {
         _pathList.clear()
-        addPath()
+        addPath(PathState(color = selectedColor, strokeWidth = selectedStrokeWidth))
     }
 }

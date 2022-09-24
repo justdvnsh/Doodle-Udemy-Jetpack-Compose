@@ -47,11 +47,6 @@ class MainActivity : ComponentActivity() {
                                 title = {
                                     Text(text = "Doodle")
                                 },
-                                actions = {
-                                    IconButton(onClick = { viewModel.deleteDrawing() }) {
-                                        Icon(imageVector = Icons.Default.Delete, contentDescription = "")
-                                    }
-                                }
                             )
                         },
                         sheetElevation = 4.dp,
@@ -60,11 +55,9 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onColorSelected = {
                                     viewModel.onColorSelect(it)
-                                    viewModel.addPath()
                                 },
                                 onStrokeSelected = {
                                     viewModel.onStrokeWidthSelect(it)
-                                    viewModel.addPath()
                                 }
                             )
                         },
@@ -73,12 +66,15 @@ class MainActivity : ComponentActivity() {
                         scaffoldState = bottomSheetScaffoldState
                     ) {
                         DrawingArea(
-                            path = viewModel.pathList,
                             color = viewModel.selectedColor,
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(bottom = 40.dp),
-                            stroke = viewModel.selectedStrokeWidth
+                            stroke = viewModel.selectedStrokeWidth,
+                            onPathDrawn = {
+                                viewModel.addPath(it)
+                            },
+                            path = viewModel.pathList
                         )
                     }
                 }
